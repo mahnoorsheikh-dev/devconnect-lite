@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 exports.registerUser = async (req, res) => {
@@ -6,7 +7,6 @@ exports.registerUser = async (req, res) => {
     const { name, email, password } = req.body;
     console.log(name, email, password);
 
-    // Basic validation
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'Please provide all fields' });
     }
@@ -18,9 +18,13 @@ exports.registerUser = async (req, res) => {
        email,
        password: hashedPassword
        });
-
-    res.status(201).json(user);
+    res.status(201).json({ id: user._id, name: user.name, email: user.email });
   } catch (error) {
+
+     if (error.code === 11000) {
+    return res.status(400).json({ message: "Email already exists" });
+  }
+  
     console.error(error);
     res.status(500).json({ error: "Server error" });
   }
@@ -42,7 +46,8 @@ exports.loginUser = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
-    res.status(200).json({ message: 'Login successful' });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.json({ token, message: 'Login successful' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
