@@ -9,6 +9,8 @@ app.use(express.json());
 // Routes
 const userRoutes = require('./routes/userRoutes');
 app.use('/api/users', userRoutes);
+const postRoutes = require('./routes/postRoutes');
+app.use('/api/posts', postRoutes);
 
 // Test route
 app.get('/api/test', (req, res) => {
