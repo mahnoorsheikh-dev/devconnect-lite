@@ -15,3 +15,33 @@ exports.createPost = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 }
+
+
+
+exports.getPosts = async (req, res) => {
+  try {
+    const posts = await Post.find().sort({ createdAt: -1 }).populate('user', 'name email');
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+}
+
+
+exports.getPostById = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    if (!postId.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: 'Invalid post ID' });
+    }
+    const post = await Post.findById(postId).populate('user', 'name email');
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+    res.status(200).json(post);
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ error: "Server error" });
+  }
+}

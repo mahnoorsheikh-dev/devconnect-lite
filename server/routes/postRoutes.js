@@ -4,5 +4,7 @@ const { createPost, getPosts, getPostById, updatePost, deletePost } = require(".
 const { authentication } = require("../middleware/auth");
 
 router.post('/', authentication, createPost)
+router.get('/', getPosts)
+router.get('/:id', getPostById)
 
 module.exports = router;
