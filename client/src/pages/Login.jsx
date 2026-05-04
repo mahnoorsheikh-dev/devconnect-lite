@@ -20,24 +20,6 @@ export default function Login () {
   }
 
 
-//   const handleLogin = async () => {
-//   try {
-//     const data = await client.login(email, password)
-
-//     console.log("FULL DATA:", data)        // 👈 check this
-//     console.log("TOKEN ONLY:", data.token) // 👈 check this
-
-//     localStorage.setItem("token", data.token)
-
-//     console.log("STORED TOKEN:", localStorage.getItem("token")) // 👈 check this
-
-//     navigate("/feed")
-//   } catch (error) {
-//     console.error(error)
-//     alert("Login failed: " + error.message)
-//   }
-// }
-
   return (
     <div>   
       <h1>Login</h1>
