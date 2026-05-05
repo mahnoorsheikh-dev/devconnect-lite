@@ -39,3 +39,22 @@ export const register = async (name, email, password) => {
     throw error
   }
 }
+
+export const getPosts = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/posts`, { 
+      headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+    })  
+    if (!response.ok) {
+      throw new Error("Failed to fetch posts")
+    }
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error("Error fetching posts:", error)
+    throw error
+  } 
+}
