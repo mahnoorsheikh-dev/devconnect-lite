@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import * as client from "../api/client"
+import * as api from "../api/client"
 
 export default function Register () {
   const [name, setName] = useState("")
@@ -10,7 +10,7 @@ export default function Register () {
 
 const handleRegister = async () => {
   try {
-    await client.register(name, email, password)
+    await api.register(name, email, password)
     alert("Registration successful! Please log in.")
     navigate("/")
   } catch (error) {
