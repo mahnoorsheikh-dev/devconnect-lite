@@ -1,7 +1,7 @@
 import React from 'react';
+import Post from './Post';
+
 export default function PostList ({ posts }) {
-  
-  
   
   return (
     <div>
@@ -9,9 +9,8 @@ export default function PostList ({ posts }) {
         <p>No posts</p>
    ) : (
         posts.map((post) => (
-           <div key={post._id}>
-             <p>{post.content}</p>
-           </div>
+              <Post key={post._id}
+               post={post} />
         ))
       )}
     </div>
