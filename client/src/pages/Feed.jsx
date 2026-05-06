@@ -7,16 +7,21 @@ import PostList from "../components/PostList";
 export default function Feed() {
 
   const [posts, setPosts] = useState([]);
+  const [loadingPosts, setLoadingPosts] = useState(true);
+  const [error, setError] = useState(null);
   
   useEffect(() => {
     const fetchPosts = async () => {
+      setError(null);
       try {
         const token = getToken();
+        setLoadingPosts(true);
         const data = await api.getPosts(token);
-        console.log("Fetched posts:", data);
         setPosts(data);
       } catch (err) {
-        console.error(err);
+        setError(`Failed to fetch posts: ${err.message}`);
+      } finally {
+        setLoadingPosts(false);
       }
     };
 
@@ -26,6 +31,8 @@ export default function Feed() {
   return (
     <div>
       <h1>Feed</h1>
+      {loadingPosts && <p>Loading posts...</p>}
+      {error && <p className="text-danger">{error}</p>}
         <CreatePost onPostCreated={(newPost) =>
           setPosts((prev) => [newPost, ...prev])}
         />
