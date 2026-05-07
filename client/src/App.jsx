@@ -11,14 +11,7 @@ function App () {
       <Routes>
         <Route path='/' element={<Login />} />
         <Route path='/register' element={<Register />} />
-
-        <Route 
-         path='/feed'
-         element={
-           <ProtectedRoute>
-             <Feed />
-           </ProtectedRoute>
-         } />
+        <Route path='/feed' element={ <Feed /> } />
          
       </Routes>
     </Router>

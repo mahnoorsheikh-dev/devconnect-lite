@@ -79,3 +79,22 @@ export const createPost = async (content, token) => {
     throw error
   }
 }
+
+export const getUser = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/users/profile`, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    })    
+    if (!response.ok) {
+      throw new Error("Failed to fetch user data")
+    }
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error("Error fetching user data:", error)
+    throw error
+  } 
+}
