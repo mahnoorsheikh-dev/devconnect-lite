@@ -3,11 +3,8 @@ import * as api from "../api/client";
 import { getToken, removeToken } from "../utils/storage";
 import CreatePost from "../components/CreatePost";
 import PostList from "../components/PostList";
-import { useNavigate } from "react-router-dom";
 
 export default function Feed() {
-
-  const navigate = useNavigate();
 
   const [posts, setPosts] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
@@ -17,16 +14,10 @@ export default function Feed() {
   useEffect(() => {
   const token = getToken();
 
-  if (!token) {
-    removeToken();
-    navigate("/");
-    return;
-  }
-
   const fetchPosts = async () => {
     try {
       setLoadingPosts(true);
-      const data = await api.getPosts(token);
+      const data = await api.getPosts();
       setPosts(data);
     } catch (err) {
       setError(err.message);
@@ -36,6 +27,9 @@ export default function Feed() {
   };
 
   const fetchUser = async () => {
+
+    if (!token) return;
+    
     try {
       const userData = await api.getUser(token);
       setUser(userData);
@@ -43,13 +37,12 @@ export default function Feed() {
       setError(err.message);
       removeToken();
       setUser(null);
-      navigate("/");
     }
   };
 
   fetchPosts();
   fetchUser();
-}, [navigate]);
+}, []);
 
   return (
     <div>
