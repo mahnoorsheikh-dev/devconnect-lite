@@ -49,7 +49,7 @@ export default function Feed() {
       <h1>Feed</h1>
 
       {loadingPosts && <p>Loading posts...</p>}
-      {error && <p className="text-danger">{error}</p>}
+      {error && <p className="text-red-900">{error}</p>}
 
       {user && <p>Welcome, {user.name}!</p>}
 
@@ -57,6 +57,7 @@ export default function Feed() {
         onPostCreated={(newPost) =>
           setPosts((prev) => [newPost, ...prev])
         }
+        user={user}
       />
 
       <PostList posts={posts} />
