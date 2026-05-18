@@ -40,12 +40,11 @@ export const register = async (name, email, password) => {
   }
 }
 
-export const getPosts = async (token) => {
+export const getPosts = async () => {
   try {
     const response = await fetch(`${BASE_URL}/posts`, { 
       headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
         }
     })  
     if (!response.ok) {
@@ -97,4 +96,22 @@ export const getUser = async (token) => {
     console.error("Error fetching user data:", error)
     throw error
   } 
+}
+
+export const getPostById = async (id) => {
+  try {
+    const response = await fetch(`${BASE_URL}/posts/${id}`, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })      
+    if (!response.ok) {
+      throw new Error("Failed to fetch post data")
+    }
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error("Error fetching post data:", error)
+    throw error
+  }
 }
