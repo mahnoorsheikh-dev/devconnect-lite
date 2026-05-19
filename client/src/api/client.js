@@ -115,3 +115,23 @@ export const getPostById = async (id) => {
     throw error
   }
 }
+
+export const  likePost = async (id, token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/posts/${id}/like`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    })  
+    if (!response.ok) {
+      throw new Error("Failed to like post")
+    }
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error("Error liking post:", error)
+    throw error
+  }
+}

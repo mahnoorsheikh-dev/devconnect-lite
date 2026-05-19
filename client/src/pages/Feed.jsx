@@ -11,6 +11,14 @@ export default function Feed() {
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
 
+  const handleLikeUpdate = (updatedPost) => {
+  setPosts((prevPosts) =>
+    prevPosts.map((post) => 
+      post._id === updatedPost._id ? updatedPost : post
+    )
+  );
+}
+
   useEffect(() => {
   const token = getToken();
 
@@ -39,7 +47,6 @@ export default function Feed() {
       setUser(null);
     }
   };
-
   fetchPosts();
   fetchUser();
 }, []);
@@ -60,7 +67,7 @@ export default function Feed() {
         user={user}
       />
 
-      <PostList posts={posts} />
+      <PostList posts={posts} onLikeUpdate={handleLikeUpdate} />
     </div>
   );
 }
