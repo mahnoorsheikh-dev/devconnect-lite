@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import * as api from "../api/client";
 
 
-export default function Post ({ post, onLikeUpdate }) {
+export default function Post ({ post, onLikeUpdate, user }) {
   const navigate = useNavigate();
 
   const handlePostClick = () => {
@@ -20,6 +20,9 @@ export default function Post ({ post, onLikeUpdate }) {
       });
   }
 
+  const isLiked = user && post.likes?.includes(user.id);
+  
+    
   return (
     <div>
         <p>{post.content} - {post.user.name}</p>
@@ -33,7 +36,7 @@ export default function Post ({ post, onLikeUpdate }) {
 
         <button 
          onClick={handleLikeClick}>
-         like the post
+          {isLiked ? "Unlike" : "Like"}
         </button>
 
 

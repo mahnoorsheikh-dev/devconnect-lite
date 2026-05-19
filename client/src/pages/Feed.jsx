@@ -67,7 +67,7 @@ export default function Feed() {
         user={user}
       />
 
-      <PostList posts={posts} onLikeUpdate={handleLikeUpdate} />
+      <PostList posts={posts} onLikeUpdate={handleLikeUpdate} user={user} />
     </div>
   );
 }
