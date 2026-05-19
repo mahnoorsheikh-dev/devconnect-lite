@@ -135,3 +135,24 @@ export const  likePost = async (id, token) => {
     throw error
   }
 }
+
+export const commentPost = async (id, content, token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/posts/${id}/comment`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ content })
+    })
+    if (!response.ok) {
+      throw new Error("Failed to comment on post")
+    }
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error("Error commenting on post:", error)
+    throw error
+  }
+}

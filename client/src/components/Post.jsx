@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import * as api from "../api/client";
 
 
-export default function Post ({ post, onLikeUpdate, user }) {
+export default function Post ({ post, onLikeUpdate, onCommentUpdate, user }) {
   const navigate = useNavigate();
+  const [comment, setComment] = useState("");
 
   const handlePostClick = () => {
     navigate(`/posts/${post._id}`);
@@ -22,7 +24,21 @@ export default function Post ({ post, onLikeUpdate, user }) {
 
   const isLiked = user && post.likes?.includes(user.id);
   
-    
+  const handleCommentClick = () => {
+    const token = localStorage.getItem("token");
+    api.commentPost(post._id, comment, token)
+      .then((updatedPost) => {
+        onCommentUpdate(updatedPost);
+        setComment("");
+      })
+      .catch((error) => {
+        console.error("Error commenting on post:", error);
+      });
+  }
+
+
+
+
   return (
     <div>
         <p>{post.content} - {post.user.name}</p>
@@ -39,8 +55,19 @@ export default function Post ({ post, onLikeUpdate, user }) {
           {isLiked ? "Unlike" : "Like"}
         </button>
 
-
-      </div>
+<div className="mt-2">
+        <input
+          type="text"
+          placeholder="Add a comment"
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        />
+        <p>Comments: {post.comments.length} - {post.comments[0]?.content}</p>
+        <button
+         onClick={handleCommentClick}>
+          Comment
+        </button>
+</div>
+    </div>
   );
 }
-      

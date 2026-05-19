@@ -1,7 +1,7 @@
 import React from 'react';
 import Post from './Post';
 
-export default function PostList ({ posts, onLikeUpdate, user }) {
+export default function PostList ({ posts, onLikeUpdate, onCommentUpdate, user }) {
   
   return (
     <div>
@@ -13,6 +13,7 @@ export default function PostList ({ posts, onLikeUpdate, user }) {
                key={post._id}
                post={post} 
                onLikeUpdate={onLikeUpdate}
+               onCommentUpdate={onCommentUpdate}
                user={user}
               />
         ))

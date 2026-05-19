@@ -19,6 +19,14 @@ export default function Feed() {
   );
 }
 
+const handleCommentUpdate = (updatedPost) => {
+  setPosts((prevPosts) =>
+    prevPosts.map((post) =>
+      post._id === updatedPost._id ? updatedPost : post
+    )
+  );
+}
+
   useEffect(() => {
   const token = getToken();
 
@@ -67,7 +75,7 @@ export default function Feed() {
         user={user}
       />
 
-      <PostList posts={posts} onLikeUpdate={handleLikeUpdate} user={user} />
+      <PostList posts={posts} onLikeUpdate={handleLikeUpdate} onCommentUpdate={handleCommentUpdate} user={user} />
     </div>
   );
 }
