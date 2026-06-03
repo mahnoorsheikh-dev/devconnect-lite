@@ -35,7 +35,9 @@ exports.getPostById = async (req, res) => {
     if (!postId.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(400).json({ message: 'Invalid post ID' });
     }
-    const post = await Post.findById(postId).populate('user', 'name email');
+    const post = await Post.findById(postId)
+    .populate('user', 'name email')
+    .populate('comments.user', 'name');
     if (!post) {
       return res.status(404).json({ message: 'Post not found' });
     }
@@ -127,12 +129,14 @@ exports.commentPost = async ( req, res) => {
     if (!postId.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(400).json({ message: 'Invalid post ID' });
     }
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId)
+    .populate('user', 'name email')
+    .populate('comments.user', 'name');
     if(!post) {
       return res.status(404).json({ message: 'Post not found' });
     }
     const { content } = req.body;
-    if (!content) {
+    if (!content || !content.trim()) {
       return res.status(400).json({ message: 'Please provide content' });
     }
     const userId = req.user.id;
