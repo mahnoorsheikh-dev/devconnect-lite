@@ -156,3 +156,24 @@ export const commentPost = async (id, content, token) => {
     throw error
   }
 }
+
+export const updatePost = async (id, content, token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/posts/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ content })
+    })
+    if (!response.ok) {
+      throw new Error("Failed to update post")
+    }
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error("Error updating post:", error)
+    throw error
+  }
+}

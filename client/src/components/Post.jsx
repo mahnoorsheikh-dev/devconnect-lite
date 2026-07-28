@@ -1,9 +1,12 @@
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import * as api from "../api/client";
 
 
 export default function Post ({ post, onLikeUpdate, user }) {
   const navigate = useNavigate();
+  const [error, setError] = useState(null);
+  
 
   const handlePostClick = () => {
     navigate(`/posts/${post._id}`);
@@ -15,8 +18,8 @@ export default function Post ({ post, onLikeUpdate, user }) {
       .then((updatedPost) => {
         onLikeUpdate(updatedPost);
       })
-      .catch((error) => {
-        console.error("Error liking post:", error);
+      .catch(() => {
+        setError("Failed to like post");
       });
   };
 
@@ -28,15 +31,35 @@ export default function Post ({ post, onLikeUpdate, user }) {
         <p>Likes: {post.likes.length}</p>
 
         <button
-            className="bg-blue-800 text-amber-50"
-            onClick={handlePostClick}>
-         View Details
+          className="bg-blue-800 text-amber-50"
+          onClick={handlePostClick}
+          disabled={!user}
+        >
+          {
+            user
+            ? "View Details"
+            : "Please log in to view details"
+          }
+          
         </button>
+        <button
+            className="bg-green-800 text-amber-50"
+            onClick={handleLikeClick}
+            disabled={!user}
+          >  {
+            user
+              ? isLiked
+                ? "Unlike"
+                : "Like"
+              : "Please log in to like"
+              }
+          </button>
+    
 
-        <button 
-         onClick={handleLikeClick}>
-          {isLiked ? "Unlike" : "Like"}
-        </button>
+          {error && <p className="text-red-900">{error}</p>}
     </div>
   );
 }
+
+
+  
