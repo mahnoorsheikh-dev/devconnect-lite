@@ -423,6 +423,90 @@ export const followUser = async (userId, token) => {
   }
 };
 
+// Notification API calls
+export const getNotifications = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/notifications`, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch notifications");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+    throw error;
+  }
+};
+
+export const markNotificationAsRead = async (notificationId, token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/notifications/${notificationId}/read`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to mark notification as read");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error marking notification as read:", error);
+    throw error;
+  }
+};
+
+export const markAllNotificationsAsRead = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/notifications/read-all`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to mark all notifications as read");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error marking all notifications as read:", error);
+    throw error;
+  }
+};
+
+export const deleteNotification = async (notificationId, token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/notifications/${notificationId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete notification");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error deleting notification:", error);
+    throw error;
+  }
+};
+
 export const deleteCommentPost = async (postId, commentId, token) => {
   try {
     const response = await fetch(`${BASE_URL}/posts/${postId}/comment/${commentId}`, {

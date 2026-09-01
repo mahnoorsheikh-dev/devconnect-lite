@@ -1,5 +1,6 @@
 const Project = require('../models/Project');
 const User = require('../models/User');
+const { createNotification } = require('./notificationcontroller');
 
 exports.createProject = async (req, res) => {
   try {
@@ -146,6 +147,17 @@ exports.likeProject = async (req, res) => {
       project.likes = project.likes.filter((id) => id.toString() !== userId);
     } else {
       project.likes.push(userId);
+      
+      // Create notification for project creator
+      const creator = await User.findById(project.creator);
+      await createNotification(
+        project.creator,
+        userId,
+        'like_project',
+        id,
+        'Project',
+        `Someone liked your project "${project.title}"`
+      );
     }
 
     await project.save();

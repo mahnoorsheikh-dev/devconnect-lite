@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { createNotification } = require('./notificationcontroller');
 
 exports.registerUser = async (req, res) => {
   try {
@@ -145,6 +146,16 @@ exports.followUser = async (req, res) => {
       // Follow
       currentUser.following.push(id);
       userToFollow.followers.push(currentUserId);
+      
+      // Create notification
+      await createNotification(
+        id,
+        currentUserId,
+        'follow',
+        currentUserId,
+        'User',
+        `${currentUser.name} started following you`
+      );
     }
 
     await currentUser.save();

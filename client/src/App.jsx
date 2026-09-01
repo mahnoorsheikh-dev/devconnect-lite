@@ -9,6 +9,7 @@ import DeveloperProfile from './pages/DeveloperProfile';
 import Projects from './pages/Projects';
 import ProjectDetail from './pages/ProjectDetail';
 import CreateProject from './pages/CreateProject';
+import Notifications from './pages/Notifications';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ROUTES } from './constants/routes';
 
@@ -24,6 +25,14 @@ function App() {
         <Route path={ROUTES.PROJECTS} element={<Projects />} />
         <Route path={ROUTES.PROJECT_DETAIL} element={<ProjectDetail />} />
         <Route path="/create-project" element={<ProtectedRoute><CreateProject /></ProtectedRoute>} />
+        <Route
+          path={ROUTES.NOTIFICATIONS}
+          element={
+            <ProtectedRoute>
+              <Notifications />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path={ROUTES.FEED}
           element={
