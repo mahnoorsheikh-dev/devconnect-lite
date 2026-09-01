@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import * as api from "../api/client";
+import useAuth from "../hooks/useAuth";
 import { setToken } from "../utils/storage";
 import LoginDesign from "../components/LoginDesign";
 
@@ -8,6 +9,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { setUser } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -15,6 +17,9 @@ export default function Login() {
     try {
       const data = await api.login(email, password);
       setToken(data.token);
+
+      const userData = await api.getUser(data.token);
+      setUser(userData);
       navigate("/feed");
     } catch (err) {
       alert(err.message);
