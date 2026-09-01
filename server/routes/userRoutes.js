@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const express = require("express");
 const router = express.Router();
-const { registerUser, loginUser, getUsers, getUserById } = require("../controllers/usercontroller");
+const { registerUser, loginUser, getUsers, getUserById, followUser } = require("../controllers/usercontroller");
 const { authentication } = require("../middleware/auth");
 
 router.post('/register', registerUser);
@@ -72,6 +72,8 @@ router.put('/profile', authentication, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+router.post('/:id/follow', authentication, followUser);
 
 router.get('/:id', getUserById);
 

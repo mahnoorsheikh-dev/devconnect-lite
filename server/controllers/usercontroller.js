@@ -105,7 +105,54 @@ exports.getUserById = async (req, res) => {
       location: user.location,
       workProgress: user.workProgress,
       skills: user.skills,
+      followers: user.followers?.length || 0,
+      following: user.following?.length || 0,
       createdAt: user.createdAt,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+exports.followUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const currentUserId = req.user.id;
+
+    if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
+
+    if (currentUserId === id) {
+      return res.status(400).json({ message: 'Cannot follow yourself' });
+    }
+
+    const userToFollow = await User.findById(id);
+    const currentUser = await User.findById(currentUserId);
+
+    if (!userToFollow || !currentUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const isFollowing = currentUser.following.includes(id);
+
+    if (isFollowing) {
+      // Unfollow
+      currentUser.following = currentUser.following.filter((userId) => userId.toString() !== id);
+      userToFollow.followers = userToFollow.followers.filter((userId) => userId.toString() !== currentUserId);
+    } else {
+      // Follow
+      currentUser.following.push(id);
+      userToFollow.followers.push(currentUserId);
+    }
+
+    await currentUser.save();
+    await userToFollow.save();
+
+    res.status(200).json({
+      message: isFollowing ? 'Unfollowed successfully' : 'Followed successfully',
+      isFollowing: !isFollowing,
     });
   } catch (error) {
     console.error(error);

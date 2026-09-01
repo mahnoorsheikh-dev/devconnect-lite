@@ -402,6 +402,27 @@ export const getProjectsByUser = async (userId) => {
   }
 };
 
+export const followUser = async (userId, token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/users/${userId}/follow`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to follow user");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error following user:", error);
+    throw error;
+  }
+};
+
 export const deleteCommentPost = async (postId, commentId, token) => {
   try {
     const response = await fetch(`${BASE_URL}/posts/${postId}/comment/${commentId}`, {

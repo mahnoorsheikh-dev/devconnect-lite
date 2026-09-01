@@ -8,10 +8,12 @@ export default function DeveloperProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const token = localStorage.getItem('token');
   const [developer, setDeveloper] = useState(null);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isFollowing, setIsFollowing] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,6 +25,10 @@ export default function DeveloperProfile() {
         ]);
         setDeveloper(devResult);
         setProjects(projResult || []);
+        // Check if current user is already following this developer
+        if (user?.id === devResult.id) {
+          setIsFollowing(false);
+        }
       } catch (err) {
         setError(err.message || 'Failed to load profile');
       } finally {
@@ -31,7 +37,24 @@ export default function DeveloperProfile() {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, user?.id]);
+
+  const handleFollow = async () => {
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const result = await api.followUser(id, token);
+      setIsFollowing(result.isFollowing);
+      // Refetch developer data to update follower count
+      const updated = await api.getUserById(id);
+      setDeveloper(updated);
+    } catch (err) {
+      console.error('Error following user:', err);
+    }
+  };
 
   if (loading) {
     return (
@@ -55,6 +78,8 @@ export default function DeveloperProfile() {
     );
   }
 
+  const isOwnProfile = user?.id === developer.id;
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
       <Navbar user={user} />
@@ -74,23 +99,32 @@ export default function DeveloperProfile() {
               </div>
             </div>
 
-            <button className="rounded-full border border-slate-700 bg-slate-950 px-4 py-2 text-sm font-medium text-white transition hover:border-indigo-500 hover:text-indigo-300">
-              Connect
-            </button>
+            {!isOwnProfile && (
+              <button
+                onClick={handleFollow}
+                className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+                  isFollowing
+                    ? 'border-indigo-500 bg-indigo-600 text-white hover:bg-indigo-700'
+                    : 'border-slate-700 bg-slate-950 text-white hover:border-indigo-500'
+                }`}
+              >
+                {isFollowing ? 'Following' : 'Follow'}
+              </button>
+            )}
           </div>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             <div className="rounded-2xl border border-indigo-500/30 bg-indigo-500/10 p-4">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-300">Status</p>
-              <p className="mt-3 text-2xl font-bold text-white">{developer.workProgress || 0}%</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-300">Followers</p>
+              <p className="mt-3 text-2xl font-bold text-white">{developer.followers || 0}</p>
             </div>
             <div className="rounded-2xl border border-violet-500/30 bg-violet-500/10 p-4">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-300">Location</p>
-              <p className="mt-3 text-2xl font-bold text-white">{developer.location || 'Remote'}</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-300">Following</p>
+              <p className="mt-3 text-2xl font-bold text-white">{developer.following || 0}</p>
             </div>
             <div className="rounded-2xl border border-sky-500/30 bg-sky-500/10 p-4">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-300">Member</p>
-              <p className="mt-3 text-2xl font-bold text-white">{developer.createdAt ? new Date(developer.createdAt).toLocaleDateString() : 'New'}</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-300">Status</p>
+              <p className="mt-3 text-2xl font-bold text-white">{developer.workProgress || 0}%</p>
             </div>
           </div>
         </div>
@@ -148,7 +182,7 @@ export default function DeveloperProfile() {
                   <h3 className="font-semibold text-white">{project.title}</h3>
                   <p className="mt-2 line-clamp-2 text-xs text-slate-300">{project.description}</p>
                   <div className="mt-3 flex items-center justify-between">
-                    <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-400 capitalize">
+                    <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-400">
                       {project.status}
                     </span>
                     <span className="text-xs text-indigo-400">{project.likes?.length || 0}♥</span>
@@ -162,3 +196,4 @@ export default function DeveloperProfile() {
     </div>
   );
 }
+

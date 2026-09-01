@@ -39,7 +39,19 @@ const userSchema = new mongoose.Schema({
   skills: {
     type: [String],
     default: ["React", "Node.js", "MongoDB", "UI Design"]
-  }
+  },
+  followers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    }
+  ],
+  following: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    }
+  ]
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);
