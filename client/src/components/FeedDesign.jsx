@@ -1,6 +1,9 @@
+import Navbar from "./Navbar";
+
 export default function FeedDesign({ user, postsCount, loadingPosts, error, children }) {
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.18),transparent_28%),linear-gradient(180deg,#020817_0%,#0f172a_100%)] text-slate-100">
+    <div className="min-h-screen bg-[#0f172a] text-slate-100">
+      <Navbar user={user} />
       <div className="mx-auto max-w-7xl px-4 py-6 md:px-6 lg:px-8">
         <header className="mb-8 rounded-[28px] border border-slate-800/80 bg-slate-900/70 p-4 shadow-[0_20px_60px_rgba(15,23,42,0.7)] backdrop-blur-xl">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
