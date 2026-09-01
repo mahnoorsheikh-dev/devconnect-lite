@@ -1,22 +1,28 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import useAuth from '../hooks/useAuth';
 import * as api from '../api/client';
 
 export default function DeveloperProfile() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [developer, setDeveloper] = useState(null);
+  const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchDeveloper = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const result = await api.getUserById(id);
-        setDeveloper(result);
+        const [devResult, projResult] = await Promise.all([
+          api.getUserById(id),
+          api.getProjectsByUser(id),
+        ]);
+        setDeveloper(devResult);
+        setProjects(projResult || []);
       } catch (err) {
         setError(err.message || 'Failed to load profile');
       } finally {
@@ -24,7 +30,7 @@ export default function DeveloperProfile() {
       }
     };
 
-    fetchDeveloper();
+    fetchData();
   }, [id]);
 
   if (loading) {
@@ -121,6 +127,37 @@ export default function DeveloperProfile() {
             </div>
           </div>
         </div>
+
+        {projects.length > 0 && (
+          <div className="mt-8 rounded-[28px] border border-slate-800 bg-slate-900/80 p-5">
+            <h2 className="text-xl font-semibold text-white">Projects</h2>
+            <div className="mt-5 grid gap-4 md:grid-cols-2">
+              {projects.map((project) => (
+                <button
+                  key={project._id}
+                  onClick={() => navigate(`/projects/${project._id}`)}
+                  className="rounded-2xl border border-slate-800 bg-slate-950 p-4 text-left transition hover:border-indigo-500/40"
+                >
+                  {project.image && (
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="mb-3 h-32 w-full rounded-lg object-cover"
+                    />
+                  )}
+                  <h3 className="font-semibold text-white">{project.title}</h3>
+                  <p className="mt-2 line-clamp-2 text-xs text-slate-300">{project.description}</p>
+                  <div className="mt-3 flex items-center justify-between">
+                    <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-400 capitalize">
+                      {project.status}
+                    </span>
+                    <span className="text-xs text-indigo-400">{project.likes?.length || 0}♥</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
