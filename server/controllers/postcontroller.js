@@ -1,4 +1,5 @@
 const Post = require('../models/Post');
+const { createNotification } = require('./notificationcontroller');
 
 exports.createPost = async (req, res) => {
   try {
@@ -112,7 +113,17 @@ exports.likePost = async (req, res) => {
     if (post.likes.some(id => id.toString() === userId)) {
       post.likes = post.likes.filter(id => id.toString() !== userId);
     } else {
-      post.likes.push(userId);     
+      post.likes.push(userId);
+      
+      // Create notification for post creator
+      await createNotification(
+        post.user,
+        userId,
+        'like_post',
+        postId,
+        'Post',
+        `Someone liked your post`
+      );
     }
     const updatedPost = await post.save();
     res.status(200).json(updatedPost);
@@ -141,6 +152,19 @@ exports.commentPost = async ( req, res) => {
     }
     const userId = req.user.id;
     post.comments.push({ content, user: userId });
+    
+    // Create notification for post creator (only if commenter is not the post creator)
+    if (post.user._id.toString() !== userId) {
+      await createNotification(
+        post.user._id,
+        userId,
+        'comment_post',
+        postId,
+        'Post',
+        `Someone commented on your post`
+      );
+    }
+    
     const updatedPost = await post.save();
     res.status(201).json(updatedPost);
   } catch (error) {
