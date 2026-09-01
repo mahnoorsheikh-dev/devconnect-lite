@@ -143,7 +143,7 @@ export default function Projects() {
                 </div>
 
                 <div className="mt-4 flex items-center justify-between border-t border-slate-800 pt-3">
-                  <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-400 capitalize">{project.status}</span>
+                  <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-400">{project.status}</span>
                   <div className="flex items-center gap-2">
                     <img
                       src={
