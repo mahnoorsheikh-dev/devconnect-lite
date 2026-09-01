@@ -1,9 +1,7 @@
-// export default function AuthContext() {
-//   const [user, setUser] = useState(null);
+import { createContext } from "react";
 
-//   useEffect(() => {
-//     const token = localStorage.getItem("token");  
-//     if (token) {
-//       api.getCurrentUser(token)
-//         .then((userData) => {     
-//           setUser(userData);
+export const AuthContext = createContext({
+  user: null,
+  setUser: () => {},
+  loading: true,
+});

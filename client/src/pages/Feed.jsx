@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import * as api from "../api/client";
-import { getToken, removeToken } from "../utils/storage";
+import useAuth from "../hooks/useAuth";
 import CreatePost from "../components/CreatePost";
 import PostList from "../components/PostList";
 
@@ -9,7 +9,7 @@ export default function Feed() {
   const [posts, setPosts] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [error, setError] = useState(null);
-  const [user, setUser] = useState(null);
+  const { user, loading } = useAuth();
 
   const handleLikeUpdate = (updatedPost) => {
   setPosts((prevPosts) =>
@@ -28,8 +28,6 @@ const handleCommentUpdate = (updatedPost) => {
 }
 
   useEffect(() => {
-  const token = getToken();
-
   const fetchPosts = async () => {
     try {
       setLoadingPosts(true);
@@ -42,21 +40,7 @@ const handleCommentUpdate = (updatedPost) => {
     }
   };
 
-  const fetchUser = async () => {
-
-    if (!token) return;
-    
-    try {
-      const userData = await api.getUser(token);
-      setUser(userData);
-    } catch (err) {
-      setError(err.message);
-      removeToken();
-      setUser(null);
-    }
-  };
   fetchPosts();
-  fetchUser();
 }, []);
 
   return (

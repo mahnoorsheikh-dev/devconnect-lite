@@ -1,47 +1,36 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import * as api from "../api/client"
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import * as api from "../api/client";
+import SignupDesign from "../components/SignupDesign";
 
-export default function Register () {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const navigate = useNavigate()
+export default function Register() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-const handleRegister = async () => {
-  try {
-    await api.register(name, email, password)
-    alert("Registration successful! Please log in.")
-    navigate("/")
-  } catch (error) {
-    alert("Registration failed: " + error.message)
-  } 
-}
+  const handleRegister = async (e) => {
+    e.preventDefault();
 
+    try {
+      await api.register(name, email, password);
+      alert("Registration successful! Please log in.");
+      navigate("/");
+    } catch (error) {
+      alert("Registration failed: " + error.message);
+    }
+  };
 
   return (
-    <div>
-      <h1>Sign up</h1>
-      <input 
-        type="text" 
-        placeholder="Name" 
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <input 
-        type="email" 
-        placeholder="Email" 
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input 
-        type="password" 
-        placeholder="Password" 
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button onClick={handleRegister}>Sign up</button>
-
-    </div>
-  )
+    <SignupDesign
+      name={name}
+      email={email}
+      password={password}
+      setName={setName}
+      setEmail={setEmail}
+      setPassword={setPassword}
+      handleRegister={handleRegister}
+      loginLink={<Link to="/" className="font-medium text-indigo-300 transition hover:text-indigo-200">Sign in</Link>}
+    />
+  );
 }

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import * as api from "../api/client";
 import { useParams } from 'react-router-dom';
+import { getToken } from '../utils/storage.js';
+import useAuth from '../hooks/useAuth';
 
-export default function PostDetails({user}) {
+export default function PostDetails() {
+  const { user } = useAuth();
 
 const [post, setPost] = useState(null);
 const [comment, setComment] = useState("");
@@ -17,8 +20,7 @@ const [loadingEditPost, setLoadingEditPost] = useState(false);
 const {id} = useParams()
 
 const handleCommentClick = () => {
-  const token = localStorage.getItem("token");
-
+  const token = getToken();
   if (!comment || !comment.trim()) return;
 
   setLoadingCreateComment(true);
@@ -37,7 +39,7 @@ const handleCommentClick = () => {
 };
 
 const handleEditPost = () => {
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!editedContent || !editedContent.trim()) return;
 
   setLoadingEditPost(true);
@@ -119,7 +121,7 @@ useEffect(() => {
             setEditingPost(true);
             setEditedContent(post.content);
           }}
-          disabled={!user || user._id !== post?.user?._id}
+          disabled={!user || user.id !== post?.user?._id}
         >
           Edit Post
         </button>
