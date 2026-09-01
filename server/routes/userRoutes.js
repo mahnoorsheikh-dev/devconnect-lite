@@ -1,8 +1,8 @@
 const User = require("../models/User");
 const express = require("express");
 const router = express.Router();
-const {registerUser, loginUser} = require("../controllers/usercontroller");
-const {authentication} = require("../middleware/auth");
+const { registerUser, loginUser, getUsers, getUserById } = require("../controllers/usercontroller");
+const { authentication } = require("../middleware/auth");
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);
@@ -29,6 +29,8 @@ router.get('/profile', authentication, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+router.get('/', getUsers);
 
 router.put('/profile', authentication, async (req, res) => {
   try {
@@ -70,5 +72,7 @@ router.put('/profile', authentication, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+router.get('/:id', getUserById);
 
 module.exports = router;

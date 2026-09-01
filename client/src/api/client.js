@@ -98,6 +98,44 @@ export const getUser = async (token) => {
   } 
 }
 
+export const getUsers = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/users`, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch developers");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching developers:", error);
+    throw error;
+  }
+};
+
+export const getUserById = async (id) => {
+  try {
+    const response = await fetch(`${BASE_URL}/users/${id}`, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch developer profile");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching developer profile:", error);
+    throw error;
+  }
+};
+
 export const updateProfile = async (profileData, token) => {
   try {
     const response = await fetch(`${BASE_URL}/users/profile`, {

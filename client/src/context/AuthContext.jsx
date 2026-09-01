@@ -1,23 +1,17 @@
 import { useEffect, useState } from "react";
-import { getUser } from "../api/client";
-import { getToken, removeToken } from "../utils/storage";
 import { AuthContext } from "./authContext";
+import { authService } from "../services/authService";
+import { removeToken } from "../utils/storage";
 
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = getToken();
-
-    const fetchUser = async () => {
-      if (!token) {
-        setLoading(false);
-        return;
-      }
+    const bootstrapAuth = async () => {
       try {
-        const userData = await getUser(token);
-        setUser(userData);
+        const userData = await authService.fetchCurrentUser();
+        setUser(userData || null);
       } catch (error) {
         console.error("Error fetching user:", error);
         removeToken();
@@ -26,11 +20,13 @@ export default function AuthProvider({ children }) {
         setLoading(false);
       }
     };
-    fetchUser();
+
+    bootstrapAuth();
   }, []);
+
   return (
     <AuthContext.Provider value={{ user, setUser, loading }}>
       {children}
     </AuthContext.Provider>
   );
-};
+}
