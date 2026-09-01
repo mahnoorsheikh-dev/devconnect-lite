@@ -258,6 +258,150 @@ export const deletePost = async (id, token) => {
   }
 }
 
+// Project API calls
+export const getProjects = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/projects`, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch projects");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching projects:", error);
+    throw error;
+  }
+};
+
+export const getProjectById = async (id) => {
+  try {
+    const response = await fetch(`${BASE_URL}/projects/${id}`, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch project");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching project:", error);
+    throw error;
+  }
+};
+
+export const createProject = async (projectData, token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/projects`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(projectData)
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to create project");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error creating project:", error);
+    throw error;
+  }
+};
+
+export const updateProject = async (id, projectData, token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/projects/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(projectData)
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update project");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating project:", error);
+    throw error;
+  }
+};
+
+export const deleteProject = async (id, token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/projects/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete project");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error deleting project:", error);
+    throw error;
+  }
+};
+
+export const likeProject = async (id, token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/projects/${id}/like`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to like project");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error liking project:", error);
+    throw error;
+  }
+};
+
+export const getProjectsByUser = async (userId) => {
+  try {
+    const response = await fetch(`${BASE_URL}/projects/user/${userId}`, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch user projects");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching user projects:", error);
+    throw error;
+  }
+};
+
 export const deleteCommentPost = async (postId, commentId, token) => {
   try {
     const response = await fetch(`${BASE_URL}/posts/${postId}/comment/${commentId}`, {

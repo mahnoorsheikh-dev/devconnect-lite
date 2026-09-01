@@ -6,6 +6,9 @@ import PostDetails from './pages/PostDetails';
 import Profile from './pages/Profile';
 import Developers from './pages/Developers';
 import DeveloperProfile from './pages/DeveloperProfile';
+import Projects from './pages/Projects';
+import ProjectDetail from './pages/ProjectDetail';
+import CreateProject from './pages/CreateProject';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ROUTES } from './constants/routes';
 
@@ -18,6 +21,9 @@ function App() {
         <Route path={ROUTES.REGISTER} element={<Register />} />
         <Route path={ROUTES.DEVELOPERS} element={<Developers />} />
         <Route path={ROUTES.DEVELOPER_DETAIL} element={<DeveloperProfile />} />
+        <Route path={ROUTES.PROJECTS} element={<Projects />} />
+        <Route path={ROUTES.PROJECT_DETAIL} element={<ProjectDetail />} />
+        <Route path="/create-project" element={<ProtectedRoute><CreateProject /></ProtectedRoute>} />
         <Route
           path={ROUTES.FEED}
           element={

@@ -6,5 +6,7 @@ export const ROUTES = {
   PROFILE: '/profile',
   DEVELOPERS: '/developers',
   DEVELOPER_DETAIL: '/developers/:id',
+  PROJECTS: '/projects',
+  PROJECT_DETAIL: '/projects/:id',
   POST_DETAIL: '/posts/:id',
 };
