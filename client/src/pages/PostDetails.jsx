@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as api from "../api/client";
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getToken } from '../utils/storage.js';
 import useAuth from '../hooks/useAuth';
 import VeiwDesign from '../components/VeiwDesign';
@@ -8,6 +8,7 @@ import VeiwDesign from '../components/VeiwDesign';
 export default function PostDetails() {
   const { user } = useAuth();
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [post, setPost] = useState(null);
   const [comment, setComment] = useState("");
@@ -18,6 +19,22 @@ export default function PostDetails() {
   const [loadingEditPost, setLoadingEditPost] = useState(false);
   const [loadingPost, setLoadingPost] = useState(true);
   const [likingPost, setLikingPost] = useState(false);
+  const [loadingDeletePost, setLoadingDeletePost] = useState(false);
+  const [loadingDeleteComment, setLoadingDeleteComment] = useState(false);
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editedCommentContent, setEditedCommentContent] = useState("");
+
+  const fetchPost = async () => {
+    try {
+      setLoadingPost(true);
+      const postData = await api.getPostById(id);
+      setPost(postData);
+    } catch {
+      setError("Failed to fetch post details");
+    } finally {
+      setLoadingPost(false);
+    }
+  };
 
   const handleCommentClick = () => {
     const token = getToken();
@@ -57,6 +74,23 @@ export default function PostDetails() {
       });
   };
 
+  const handleDeletePost = () => {
+    const token = getToken();
+    if (!post) return;
+
+    setLoadingDeletePost(true);
+    api.deletePost(post._id, token)
+      .then(() => {
+        navigate('/feed');
+      })
+      .catch(() => {
+        setError("Failed to delete post");
+      })
+      .finally(() => {
+        setLoadingDeletePost(false);
+      });
+  };
+
   const handleLikePost = () => {
     if (!user || !post || likingPost) return;
 
@@ -76,19 +110,42 @@ export default function PostDetails() {
       });
   };
 
-  useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        setLoadingPost(true);
-        const postData = await api.getPostById(id);
-        setPost(postData);
-      } catch {
-        setError("Failed to fetch post details");
-      } finally {
-        setLoadingPost(false);
-      }
-    };
+  const handleDeleteComment = (commentId) => {
+    const token = getToken();
+    if (!post || !commentId) return;
 
+    setLoadingDeleteComment(true);
+    api.deleteCommentPost(post._id, commentId, token)
+      .then(() => {
+        setPost((prev) => ({
+          ...prev,
+          comments: (prev?.comments || []).filter((item) => item._id !== commentId),
+        }));
+      })
+      .catch(() => {
+        setError("Failed to delete comment");
+      })
+      .finally(() => {
+        setLoadingDeleteComment(false);
+      });
+  };
+
+  const handleEditComment = (commentId) => {
+    const token = getToken();
+    if (!post || !commentId || !editedCommentContent.trim()) return;
+
+    api.updateCommentPost(post._id, commentId, editedCommentContent, token)
+      .then((updatedPost) => {
+        setPost(updatedPost);
+        setEditingCommentId(null);
+        setEditedCommentContent("");
+      })
+      .catch(() => {
+        setError("Failed to edit comment");
+      });
+  };
+
+  useEffect(() => {
     fetchPost();
   }, [id]);
 
@@ -108,11 +165,20 @@ export default function PostDetails() {
       setEditedContent={setEditedContent}
       handleCommentClick={handleCommentClick}
       handleEditPost={handleEditPost}
+      handleDeletePost={handleDeletePost}
       handleLikePost={handleLikePost}
       loadingPost={loadingPost}
       likingPost={likingPost}
       isLiked={!!user && !!post && post.likes?.includes(user.id || user._id)}
       likeCount={post?.likes?.length || 0}
+      handleDeleteComment={handleDeleteComment}
+      loadingDeleteComment={loadingDeleteComment}
+      editingCommentId={editingCommentId}
+      setEditingCommentId={setEditingCommentId}
+      editedCommentContent={editedCommentContent}
+      setEditedCommentContent={setEditedCommentContent}
+      handleEditComment={handleEditComment}
+      loadingDeletePost={loadingDeletePost}
     />
   );
 }

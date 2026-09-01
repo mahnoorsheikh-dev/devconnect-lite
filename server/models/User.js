@@ -13,7 +13,33 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
-  }, 
+  },
+  avatar: {
+    type: String,
+    default: ""
+  },
+  bio: {
+    type: String,
+    default: ""
+  },
+  role: {
+    type: String,
+    default: "Full-Stack Developer"
+  },
+  location: {
+    type: String,
+    default: "Remote"
+  },
+  workProgress: {
+    type: Number,
+    default: 72,
+    min: 0,
+    max: 100
+  },
+  skills: {
+    type: [String],
+    default: ["React", "Node.js", "MongoDB", "UI Design"]
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);

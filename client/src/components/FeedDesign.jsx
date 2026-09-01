@@ -16,7 +16,7 @@ export default function FeedDesign({ user, postsCount, loadingPosts, error, chil
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-violet-500 to-sky-500 text-lg font-bold text-white shadow-lg shadow-indigo-500/25">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-indigo-500 via-violet-500 to-sky-500 text-lg font-bold text-white shadow-lg shadow-indigo-500/25">
                   {user?.name?.charAt(0)?.toUpperCase() || "G"}
                 </div>
                 <div>

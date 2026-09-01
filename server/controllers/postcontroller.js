@@ -150,6 +150,41 @@ exports.commentPost = async ( req, res) => {
   }
 }
 
+exports.updateCommentPost = async (req, res) => {
+  try {
+    const { postId, commentId } = req.params;
+    if (!postId.match(/^[0-9a-fA-F]{24}$/) || !commentId.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: 'Invalid post or comment ID' });
+    }
+
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    const comment = post.comments.find(c => c._id.toString() === commentId);
+    if (!comment) {
+      return res.status(404).json({ message: 'Comment not found' });
+    }
+
+    if (comment.user.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
+
+    const { content } = req.body;
+    if (!content || !content.trim()) {
+      return res.status(400).json({ message: 'Please provide content' });
+    }
+
+    comment.content = content.trim();
+    const updatedPost = await post.save();
+    res.status(200).json(updatedPost);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+}
+
 
 exports.deleteCommentPost = async (req, res) => {
   try {
@@ -171,7 +206,7 @@ exports.deleteCommentPost = async (req, res) => {
     post.comments = post.comments.filter(c => c._id.toString() !== commentId);
 
     const updatedPost = await post.save();
-    res.status(200).json({ message: "Comment deleted successfully" });
+    res.status(200).json(updatedPost);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });

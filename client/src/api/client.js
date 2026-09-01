@@ -98,6 +98,29 @@ export const getUser = async (token) => {
   } 
 }
 
+export const updateProfile = async (profileData, token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/users/profile`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(profileData)
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || "Failed to update profile");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    throw error;
+  }
+}
+
 export const getPostById = async (id) => {
   try {
     const response = await fetch(`${BASE_URL}/posts/${id}`, {
@@ -174,6 +197,64 @@ export const updatePost = async (id, content, token) => {
     return data
   } catch (error) {
     console.error("Error updating post:", error)
+    throw error
+  }
+}
+
+export const deletePost = async (id, token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/posts/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    })
+    if (!response.ok) {
+      throw new Error("Failed to delete post")
+    }
+    return await response.json()
+  } catch (error) {
+    console.error("Error deleting post:", error)
+    throw error
+  }
+}
+
+export const deleteCommentPost = async (postId, commentId, token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/posts/${postId}/comment/${commentId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    })
+    if (!response.ok) {
+      throw new Error("Failed to delete comment")
+    }
+    return await response.json()
+  } catch (error) {
+    console.error("Error deleting comment:", error)
+    throw error
+  }
+}
+
+export const updateCommentPost = async (postId, commentId, content, token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/posts/${postId}/comment/${commentId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ content })
+    })
+    if (!response.ok) {
+      throw new Error("Failed to update comment")
+    }
+    return await response.json()
+  } catch (error) {
+    console.error("Error updating comment:", error)
     throw error
   }
 }
